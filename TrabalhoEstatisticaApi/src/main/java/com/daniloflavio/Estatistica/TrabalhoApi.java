@@ -1,4 +1,4 @@
-package com.danilo-flavio.Estatistica;
+package com.daniloflavio.Estatistica;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;

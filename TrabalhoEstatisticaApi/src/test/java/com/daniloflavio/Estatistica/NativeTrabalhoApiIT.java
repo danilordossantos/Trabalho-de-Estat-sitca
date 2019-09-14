@@ -1,4 +1,4 @@
-package com.danilo-flavio.Estatistica;
+package com.daniloflavio.Estatistica;
 
 import io.quarkus.test.junit.SubstrateTest;
 

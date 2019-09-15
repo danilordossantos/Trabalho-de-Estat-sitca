@@ -1,36 +1,49 @@
 package com.daniloflavio.Estatistica.model;
 
+import javax.enterprise.context.ApplicationScoped;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+@ApplicationScoped
 public class Amostra {
     private HashMap<String, List<Integer>> registros;
 
     public Amostra() {
-        registros = registrosZerados();
+        simulaRegistros();
     }
 
-    private void simulaRegistros(){
-        registros = registrosZerados();
-        insereDado("Bebes",3 );
-        insereDado("Crianças", 10);
-        insereDado("Jovems",20);
-        insereDado("Adultos", 10);
-        insereDado("Idosos",17);
+    public void simulaRegistros(){
+        zeraRegistros();
+        insereRegistro("Bebes",3 );
+        insereRegistro("Crianças", 10);
+        insereRegistro("Jovems",20);
+        insereRegistro("Adultos", 10);
+        insereRegistro("Idosos",17);
     }
 
-    private void insereDado(String nomeVariavel, int quantidade){
+    public void insereRegistro(String nomeVariavel, int quantidade){
         List<Integer> listaNumeros = new ArrayList<>();
         listaNumeros.add(quantidade);
-        registros.put(nomeVariavel, listaNumeros);
+        this.registros.put(nomeVariavel, listaNumeros);
     }
 
-    private void removeRegistro(String chave){
+    public void removeRegistro(String chave){
         this.registros.remove(chave);
     }
 
-    private HashMap<String, List<Integer>> registrosZerados(){
-        return new HashMap<String, List<Integer>>();
+    public void zeraRegistros(){
+        this.registros = new HashMap<String, List<Integer>>();
+    }
+
+    public String informaDadosDosRegistros(){
+        StringBuffer textoRegistros = new StringBuffer();
+        for(String registro : registros.keySet()){
+            textoRegistros.append(registro)
+                    .append(">")
+                    .append(registros.get(registro) )
+                    .append("\n");
+        }
+        return textoRegistros.toString();
     }
 }

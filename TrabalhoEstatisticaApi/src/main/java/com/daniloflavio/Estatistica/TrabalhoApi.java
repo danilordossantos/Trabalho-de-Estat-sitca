@@ -1,6 +1,7 @@
 package com.daniloflavio.Estatistica;
 
 import com.daniloflavio.Estatistica.model.Amostra;
+import com.daniloflavio.Estatistica.model.Calculo;
 
 import javax.inject.Inject;
 import javax.ws.rs.GET;
@@ -14,11 +15,14 @@ public class TrabalhoApi {
 
     @Inject
     Amostra amostra;
+    @Inject
+    Calculo calculo;
 
     @GET
     @Produces(MediaType.TEXT_PLAIN)
     public String hello() {
         return this.amostra.informaDadosDosRegistros();
+        //return String.valueOf(this.calculo.frequenciaAbsoluta(this.amostra.getRegistros()));
     }
 
     @GET
@@ -44,5 +48,12 @@ public class TrabalhoApi {
         }catch (Exception e){
             return "Falha  ao remover";
         }
+    }
+
+    @GET
+    @Path("/media")
+    @Produces(MediaType.TEXT_PLAIN)
+    public String media(){
+        return String.valueOf(this.calculo.media(this.amostra.getRegistros()));
     }
 }

@@ -10,7 +10,7 @@ public class Amostra {
     private HashMap<String, List<Integer>> registros;
 
     public Amostra() {
-        simulaRegistros();
+        simulaRegistrosNumericos();
     }
 
     public void simulaRegistros(){
@@ -20,6 +20,18 @@ public class Amostra {
         insereRegistro("Jovems",20);
         insereRegistro("Adultos", 10);
         insereRegistro("Idosos",17);
+    }
+
+    public void simulaRegistrosNumericos(){
+
+        //Idade de crianças  (idade , frequencia)
+        zeraRegistros();
+        insereRegistro("0",4);
+        insereRegistro("1",7);
+        insereRegistro("2",10);
+        insereRegistro("3",12);
+        insereRegistro("4",5);
+        insereRegistro("5",3);
     }
 
     public void insereRegistro(String nomeVariavel, int quantidade){
@@ -45,5 +57,9 @@ public class Amostra {
                     .append("\n");
         }
         return textoRegistros.toString();
+    }
+
+    public HashMap<String, List<Integer>> getRegistros() {
+        return registros;
     }
 }

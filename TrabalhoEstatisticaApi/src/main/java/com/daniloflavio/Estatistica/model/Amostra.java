@@ -8,6 +8,8 @@ import java.util.List;
 @ApplicationScoped
 public class Amostra {
     private HashMap<String, List<Integer>> registros;
+    private double media;
+    private double moda;
 
     public Amostra() {
         simulaRegistrosNumericos();
@@ -61,5 +63,21 @@ public class Amostra {
 
     public HashMap<String, List<Integer>> getRegistros() {
         return registros;
+    }
+
+    public double getMedia() {
+        return media;
+    }
+
+    public void setMedia(double media) {
+        this.media = media;
+    }
+
+    public double getModa() {
+        return moda;
+    }
+
+    public void setModa(double moda) {
+        this.moda = moda;
     }
 }

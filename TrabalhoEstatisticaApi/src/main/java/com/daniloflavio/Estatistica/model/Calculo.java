@@ -3,7 +3,6 @@ package com.daniloflavio.Estatistica.model;
 import javax.enterprise.context.ApplicationScoped;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @ApplicationScoped
 public class Calculo {
@@ -60,5 +59,16 @@ public class Calculo {
         else{
             colunas.set(numeroColuna,valor);
         }
+    }
+
+    public double calculaModa(HashMap<String, List<Integer>> registros){
+        double moda = 0;
+        int atual = 0;
+        for(String reg : registros.keySet()){
+            atual = registros.get(reg).get(0);
+            if(atual>moda)
+                moda = atual;
+        }
+        return moda;
     }
 }

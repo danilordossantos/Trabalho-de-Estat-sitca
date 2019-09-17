@@ -32,7 +32,12 @@ public class TrabalhoApi {
         try {
             int valorNumerico = Integer.valueOf(valor);
             amostra.insereRegistro(chave, valorNumerico);
-            return "Registro adicionado";
+            amostra.setMedia(calculo.media(amostra.getRegistros()));
+            if(amostra.getModa()==0)
+                amostra.setModa(calculo.calculaModa(amostra.getRegistros()));
+            else if(amostra.getModa() < valorNumerico)
+                amostra.setModa(valorNumerico);
+            return "Registro adicionado\nMédia = "+amostra.getMedia()+"\nModa = "+amostra.getModa();
         }catch (Exception e){
             return "A quantidade informada nâo é um numero inteiro";
         }

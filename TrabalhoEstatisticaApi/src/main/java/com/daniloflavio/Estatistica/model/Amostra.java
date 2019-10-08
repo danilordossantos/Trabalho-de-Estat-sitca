@@ -9,7 +9,8 @@ import java.util.List;
 public class Amostra {
     private HashMap<String, List<Integer>> registros;
     private double media;
-    private double moda;
+    private String moda;
+    private double mediana;
 
     public Amostra() {
         simulaRegistrosNumericos();
@@ -17,11 +18,11 @@ public class Amostra {
 
     public void simulaRegistros(){
         zeraRegistros();
-        insereRegistro("Bebes",3 );
-        insereRegistro("Crianças", 10);
-        insereRegistro("Jovems",20);
-        insereRegistro("Adultos", 10);
-        insereRegistro("Idosos",17);
+        insereRegistro("GalaxyA10",3 );
+        insereRegistro("GalaxyA20", 10);
+        insereRegistro("GalaxyA30",20);
+        insereRegistro("GalaxyA40", 10);
+        insereRegistro("GalaxyA50",17);
     }
 
     public void simulaRegistrosNumericos(){
@@ -73,11 +74,19 @@ public class Amostra {
         this.media = media;
     }
 
-    public double getModa() {
+    public String getModa() {
         return moda;
     }
 
-    public void setModa(double moda) {
+    public void setModa(String moda) {
         this.moda = moda;
+    }
+
+    public double getMediana() {
+        return mediana;
+    }
+
+    public void setMediana(double mediana) {
+        this.mediana = mediana;
     }
 }

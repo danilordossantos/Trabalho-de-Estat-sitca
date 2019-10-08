@@ -3,53 +3,77 @@ package com.daniloflavio.Estatistica.model;
 import javax.enterprise.context.ApplicationScoped;
 import java.util.HashMap;
 import java.util.List;
+import java.util.NavigableMap;
+import java.util.TreeMap;
 
 @ApplicationScoped
 public class Calculo {
+    private static final int INDICE_FREQUENCIA = 0;
+    private static final int INDICE_FREQUENCIA_ACUMULADA = 1;
+    private static final int INDICE_SOMA_DA_MULTIPLICACAO_DAS_FREQUENCIAS = 2;
 
     public Calculo() {}
 
     //Coluna 1 do lista
     public double frequenciaAbsoluta(HashMap<String, List<Integer>> registros) {
-        final int NUMERO_COLUNA = 1;
         if (registros.isEmpty())return 0;
         String chaveDoRegistroAnterior = null;
         for (String registroAtual : registros.keySet()) {
             if (chaveDoRegistroAnterior != null) {
-                adicionaNaColuna(registros.get(registroAtual), NUMERO_COLUNA, (registros.get(chaveDoRegistroAnterior).get(1) + registros.get(registroAtual).get(0)));
+                adicionaNaColuna(registros.get(registroAtual), INDICE_FREQUENCIA_ACUMULADA, (registros.get(chaveDoRegistroAnterior).get(1) + registros.get(registroAtual).get(0)));
             }else{
-                adicionaNaColuna(registros.get(registroAtual), NUMERO_COLUNA, registros.get(registroAtual).get(0) );
+                adicionaNaColuna(registros.get(registroAtual), INDICE_FREQUENCIA_ACUMULADA, registros.get(registroAtual).get(0) );
             }
             chaveDoRegistroAnterior = registroAtual;
 
         }
-        return registros.get(chaveDoRegistroAnterior).get(1);
+        return registros.get(chaveDoRegistroAnterior).get(INDICE_FREQUENCIA_ACUMULADA);
     }
 
-    //Coluna 2 do list
-    public double somatoriaDasFrequencias(HashMap<String, List<Integer>> registros){
-        final int NUMERO_COLUNA = 2;
+    //FiXi Coluna 2 do list
+    public double somaFrequenciasDosRegistros(HashMap<String, List<Integer>> registros){
         int variavel = 0;
         int frequencia = 0;
         if (registros.isEmpty())return 0;
         String chaveDoRegistroAnterior = null;
         for (String registroAtual : registros.keySet()) {
             variavel = Integer.valueOf(registroAtual);
-            frequencia = registros.get(registroAtual).get(0);
+            frequencia = registros.get(registroAtual).get(INDICE_FREQUENCIA);
 
-            if (chaveDoRegistroAnterior != null) {
-                adicionaNaColuna(registros.get(registroAtual), NUMERO_COLUNA, (variavel * frequencia+registros.get(chaveDoRegistroAnterior).get(2)));
-            }else{
-                adicionaNaColuna(registros.get(registroAtual), NUMERO_COLUNA,(variavel * frequencia) );
+            if (chaveDoRegistroAnterior != null) { //Caso o registro atual nao seja o primeiro
+                adicionaNaColuna(registros.get(registroAtual), INDICE_SOMA_DA_MULTIPLICACAO_DAS_FREQUENCIAS, (variavel * frequencia+registros.get(chaveDoRegistroAnterior).get(2)));
+            }else{ // Quando o registro verificado for o  primeiro
+                adicionaNaColuna(registros.get(registroAtual), INDICE_SOMA_DA_MULTIPLICACAO_DAS_FREQUENCIAS,(variavel * frequencia) );
             }
             chaveDoRegistroAnterior = registroAtual;
         }
-        return registros.get(chaveDoRegistroAnterior).get(NUMERO_COLUNA);
+        return registros.get(chaveDoRegistroAnterior).get(INDICE_SOMA_DA_MULTIPLICACAO_DAS_FREQUENCIAS);
+    }
+    //FiXi ao quadrado
+    public double somaFrequenciasDosRegistrosAoQuadrado(HashMap<String, List<Integer>> registros){
+        double somatoria = 0;
+        int variavel = 0;
+        int frequencia = 0;
+        double valorAtual = 0;
+        if (registros.isEmpty())return 0;
+
+        for (String registroAtual : registros.keySet()) {
+            variavel = Integer.valueOf(registroAtual);
+            frequencia = registros.get(registroAtual).get(INDICE_FREQUENCIA);
+            valorAtual = Math.pow((variavel*frequencia),2);
+
+            if (somatoria == 0) { //Caso o registro atual nao seja o primeiro
+                somatoria = valorAtual;
+            }else{ // Quando o registro verificado for o  primeiro
+                somatoria += valorAtual;
+            }
+        }
+        return somatoria;
     }
 
     public double media(HashMap<String, List<Integer>> registros){
         double frequenciaAbsoluta = frequenciaAbsoluta(registros);
-        double somaDasFrequencias = somatoriaDasFrequencias(registros);
+        double somaDasFrequencias = somaFrequenciasDosRegistros(registros);
         return somaDasFrequencias/frequenciaAbsoluta;
     }
 
@@ -61,14 +85,64 @@ public class Calculo {
         }
     }
 
-    public double calculaModa(HashMap<String, List<Integer>> registros){
-        double moda = 0;
-        int atual = 0;
+    public String calculaModa(HashMap<String, List<Integer>> registros){
+        String moda = "";
+        int frequenciaDaModa = 0;
+        int frequenciaAtual = 0;
         for(String reg : registros.keySet()){
-            atual = registros.get(reg).get(0);
-            if(atual>moda)
-                moda = atual;
+            if(moda.equals("")) {
+                moda=reg;
+                continue;
+            }
+            frequenciaAtual = registros.get(reg).get(INDICE_FREQUENCIA);
+            frequenciaDaModa = registros.get(moda).get(INDICE_FREQUENCIA);
+            if(frequenciaAtual>frequenciaDaModa)
+                moda = reg;
         }
         return moda;
     }
+
+    public String getMediana(HashMap<String,List<Integer>> registros){
+        int indiceMediana = (getSomatoriaDasFrequencias(registros)+1)/2;
+        int indicesVerificados = 0;
+        for(String chaveRegistro : registros.keySet()){
+            if(contemAMediana(registros.get(chaveRegistro),indicesVerificados,indiceMediana))
+                return chaveRegistro;
+            else
+                indicesVerificados = registros.get(chaveRegistro).get(INDICE_FREQUENCIA_ACUMULADA);
+        }
+        return "Mediana não encontrada";
+    }
+
+    private boolean contemAMediana(List<Integer> registros, int indicesVerificados, int indiceMediana) {
+        return (indicesVerificados+registros.size() >= indiceMediana);
+    }
+
+    public int getSomatoriaDasFrequencias(HashMap<String,List<Integer>> registros){
+        NavigableMap <String,List<Integer>> map = new TreeMap<>(registros);
+        //A frequencia acumulada do ultimo indice corresponnde a somatória das frequencias
+        return map.lastEntry().getValue().get(INDICE_FREQUENCIA_ACUMULADA);
+    }
+
+    public int getAmplitudeTotal(HashMap<String,List<Integer>> registros){
+        try{
+            NavigableMap <String,List<Integer>> map = new TreeMap<>(registros);
+            int ultimaVariavel = Integer.valueOf(map.lastKey());
+            int primeiraVariavel = Integer.valueOf(map.firstKey());
+            return ultimaVariavel-primeiraVariavel;
+        }catch (Exception e){
+            return 0;
+        }
+    }
+
+    public double getDesvioPadrao(HashMap<String,List<Integer>> registros){
+        double desvioPadrao = Math.sqrt((somaFrequenciasDosRegistrosAoQuadrado(registros)/2)- Math.pow((getSomatoriaDasFrequencias(registros)/2),2));
+        return desvioPadrao;
+    }
+
+    public double getCoeficienteDeVariacao(HashMap<String,List<Integer>> registros){
+        double coeficienteDeVariacao = getDesvioPadrao(registros)/media(registros)*100;
+        return coeficienteDeVariacao;
+    }
+
 }

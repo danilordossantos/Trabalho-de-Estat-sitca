@@ -12,7 +12,7 @@ public class TrabalhoApiTest {
     @Test
     public void testHelloEndpoint() {
         given()
-          .when().get("/C:/Program Files/Git/calc")
+          .when().get("/calc")
           .then()
              .statusCode(200)
              .body(is("hello"));

@@ -33,15 +33,14 @@ public class TrabalhoApi {
             int valorNumerico = Integer.valueOf(valor);
             amostra.insereRegistro(chave, valorNumerico);
             amostra.setMedia(calculo.media(amostra.getRegistros()));
-            if(amostra.getModa()==0)
-                amostra.setModa(calculo.calculaModa(amostra.getRegistros()));
-            else if(amostra.getModa() < valorNumerico)
-                amostra.setModa(valorNumerico);
+            amostra.setModa(calculo.calculaModa(amostra.getRegistros()));
             return "Registro adicionado\nMédia = "+amostra.getMedia()+"\nModa = "+amostra.getModa();
         }catch (Exception e){
+            e.printStackTrace();
             return "A quantidade informada nâo é um numero inteiro";
         }
     }
+
 
     @GET
     @Path("/remover/{chave}")
@@ -60,5 +59,40 @@ public class TrabalhoApi {
     @Produces(MediaType.TEXT_PLAIN)
     public String media(){
         return String.valueOf(this.calculo.media(this.amostra.getRegistros()));
+    }
+
+    @GET
+    @Path("/mediana")
+    @Produces(MediaType.TEXT_PLAIN)
+    public String mediana(){
+        return this.calculo.getMediana(this.amostra.getRegistros()) ;
+    }
+
+    @GET
+    @Path("/moda")
+    @Produces(MediaType.TEXT_PLAIN)
+    public String moda(){
+        return this.calculo.calculaModa(this.amostra.getRegistros()) ;
+    }
+
+    @GET
+    @Path("/amplitude")
+    @Produces(MediaType.TEXT_PLAIN)
+    public String amplitudeTotal(){
+        return String.valueOf(this.calculo.getAmplitudeTotal(this.amostra.getRegistros())) ;
+    }
+
+    @GET
+    @Path("/desvio")
+    @Produces(MediaType.TEXT_PLAIN)
+    public String desvioPadrao(){
+        return String.valueOf(this.calculo.getDesvioPadrao(this.amostra.getRegistros())) ;
+    }
+
+    @GET
+    @Path("/variacao")
+    @Produces(MediaType.TEXT_PLAIN)
+    public String coeficienteDeVariacao(){
+        return String.valueOf(this.calculo.getCoeficienteDeVariacao(this.amostra.getRegistros())) ;
     }
 }

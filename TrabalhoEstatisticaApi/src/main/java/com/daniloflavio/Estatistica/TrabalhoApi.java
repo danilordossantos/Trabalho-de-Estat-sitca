@@ -2,6 +2,7 @@ package com.daniloflavio.Estatistica;
 
 import com.daniloflavio.Estatistica.model.Amostra;
 import com.daniloflavio.Estatistica.model.Calculo;
+import com.google.gson.Gson;
 
 import javax.inject.Inject;
 import javax.ws.rs.GET;
@@ -94,5 +95,16 @@ public class TrabalhoApi {
     @Produces(MediaType.TEXT_PLAIN)
     public String coeficienteDeVariacao(){
         return String.valueOf(this.calculo.getCoeficienteDeVariacao(this.amostra.getRegistros())) ;
+    }
+
+    @GET
+    @Path("/resultado")
+    @Produces(MediaType.TEXT_PLAIN)
+    public String resultado(){
+        AmostraDTO amostraDTO = new AmostraDTO();
+        Gson gson = new Gson();
+        amostra.calcular();
+        amostraDTO.write(amostra);
+        return gson.toJson(amostraDTO);
     }
 }

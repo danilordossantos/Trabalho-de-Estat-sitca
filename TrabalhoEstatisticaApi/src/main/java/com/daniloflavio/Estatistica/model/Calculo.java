@@ -1,6 +1,8 @@
 package com.daniloflavio.Estatistica.model;
 
 import javax.enterprise.context.ApplicationScoped;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.util.HashMap;
 import java.util.List;
 import java.util.NavigableMap;
@@ -103,19 +105,42 @@ public class Calculo {
     }
 
     public String getMediana(HashMap<String,List<Integer>> registros){
-        int indiceMediana = (getSomatoriaDasFrequencias(registros)+1)/2;
-        int indicesVerificados = 0;
-        for(String chaveRegistro : registros.keySet()){
-            if(contemAMediana(registros.get(chaveRegistro),indicesVerificados,indiceMediana))
-                return chaveRegistro;
-            else
-                indicesVerificados = registros.get(chaveRegistro).get(INDICE_FREQUENCIA_ACUMULADA);
-        }
-        return "Mediana não encontrada";
+        if(getSomatoriaDasFrequencias(registros)%2 == 0)
+            return getMedianaAmplitudePar(registros);
+        else
+            return getMedianaAmplitudeImpar(registros);
     }
 
-    private boolean contemAMediana(List<Integer> registros, int indicesVerificados, int indiceMediana) {
-        return (indicesVerificados+registros.size() >= indiceMediana);
+    private String getMedianaAmplitudeImpar(HashMap<String,List<Integer>> registros){
+        int indiceMediana = (getSomatoriaDasFrequencias(registros)+1)/2;
+        int valorMediana = getFrequenciaPorFrequenciaAcumulada(registros,indiceMediana);
+        return String.valueOf(valorMediana);
+    }
+
+    private String getMedianaAmplitudePar(HashMap<String,List<Integer>> registros){
+        int indiceSuperior = (getSomatoriaDasFrequencias(registros)+1)/2;
+        int indiceInferior = indiceSuperior-1;
+
+        try{
+            NumberFormat formato = new DecimalFormat("0.00");
+            int valorSuperior = getFrequenciaPorFrequenciaAcumulada(registros,indiceSuperior);
+            int valorInferior = getFrequenciaPorFrequenciaAcumulada(registros,indiceInferior);
+            double resultado = (valorSuperior+valorInferior)/2;
+            return formato.format(resultado);
+        }catch (Exception e){
+            return "A mediana estã entre "+ indiceSuperior+" e "+indiceInferior;
+        }
+    }
+
+    private int getFrequenciaPorFrequenciaAcumulada(HashMap<String,List<Integer>> registros, int indice){
+       int contador = 0;
+        for(String reg : registros.keySet()) {
+            contador+= registros.get(reg).get(0);
+            if(contador>=indice){
+                return registros.get(reg).get(0);
+            }
+        }
+        return 0;
     }
 
     public int getSomatoriaDasFrequencias(HashMap<String,List<Integer>> registros){

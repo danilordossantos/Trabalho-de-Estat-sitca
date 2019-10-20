@@ -10,7 +10,9 @@ public class Amostra {
     private HashMap<String, List<Integer>> registros;
     private double media;
     private String moda;
-    private double mediana;
+    private String mediana;
+    private double desvioPadrao;
+    String nome = "Nome ";
 
     public Amostra() {
         simulaRegistrosNumericos();
@@ -23,7 +25,7 @@ public class Amostra {
         insereRegistro("GalaxyA30",20);
         insereRegistro("GalaxyA40", 10);
         insereRegistro("GalaxyA50",17);
-    }
+     }
 
     public void simulaRegistrosNumericos(){
 
@@ -82,11 +84,23 @@ public class Amostra {
         this.moda = moda;
     }
 
-    public double getMediana() {
+    public String getMediana() {
         return mediana;
     }
 
-    public void setMediana(double mediana) {
+    public void setMediana(String mediana) {
         this.mediana = mediana;
+    }
+
+    public double getDesvioPadrao() {
+        return desvioPadrao;
+    }
+
+    public void calcular() {
+        Calculo calc = new Calculo();
+        this.media = calc.media(this.registros);
+        this.moda = calc.calculaModa(this.registros);
+        this.mediana = calc.getMediana(this.registros);
+        this.desvioPadrao = calc.getDesvioPadrao(this.registros);
     }
 }

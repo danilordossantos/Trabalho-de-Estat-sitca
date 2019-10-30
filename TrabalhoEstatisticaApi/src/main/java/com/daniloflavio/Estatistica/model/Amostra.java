@@ -12,14 +12,14 @@ public class Amostra {
     private String moda;
     private String mediana;
     private double desvioPadrao;
-    String nome = "Nome ";
+    private double coeficienteDeVariacao;
 
     public Amostra() {
+        zeraRegistros();
         simulaRegistrosNumericos();
     }
 
     public void simulaRegistros(){
-        zeraRegistros();
         insereRegistro("GalaxyA10",3 );
         insereRegistro("GalaxyA20", 10);
         insereRegistro("GalaxyA30",20);
@@ -28,9 +28,7 @@ public class Amostra {
      }
 
     public void simulaRegistrosNumericos(){
-
         //Idade de crianças  (idade , frequencia)
-        zeraRegistros();
         insereRegistro("0",4);
         insereRegistro("1",7);
         insereRegistro("2",10);
@@ -96,11 +94,20 @@ public class Amostra {
         return desvioPadrao;
     }
 
+    public double getCoeficienteDeVariacao() {
+        return coeficienteDeVariacao;
+    }
+
+    public void setCoeficienteDeVariacao(double coeficienteDeVariacao) {
+        this.coeficienteDeVariacao = coeficienteDeVariacao;
+    }
+
     public void calcular() {
         Calculo calc = new Calculo();
         this.media = calc.media(this.registros);
         this.moda = calc.calculaModa(this.registros);
         this.mediana = calc.getMediana(this.registros);
         this.desvioPadrao = calc.getDesvioPadrao(this.registros);
+        this.coeficienteDeVariacao = calc.getCoeficienteDeVariacao(this.registros);
     }
 }

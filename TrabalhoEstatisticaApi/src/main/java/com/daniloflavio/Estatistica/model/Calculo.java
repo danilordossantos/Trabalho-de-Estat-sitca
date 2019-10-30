@@ -62,7 +62,7 @@ public class Calculo {
         for (String registroAtual : registros.keySet()) {
             variavel = Integer.valueOf(registroAtual);
             frequencia = registros.get(registroAtual).get(INDICE_FREQUENCIA);
-            valorAtual = Math.pow((variavel*frequencia),2);
+            valorAtual = variavel*Math.pow(frequencia,2);
 
             if (somatoria == 0) { //Caso o registro atual nao seja o primeiro
                 somatoria = valorAtual;
@@ -113,8 +113,7 @@ public class Calculo {
 
     private String getMedianaAmplitudeImpar(HashMap<String,List<Integer>> registros){
         int indiceMediana = (getSomatoriaDasFrequencias(registros)+1)/2;
-        int valorMediana = getFrequenciaPorFrequenciaAcumulada(registros,indiceMediana);
-        return String.valueOf(valorMediana);
+        return getRegistroDamediana(registros,indiceMediana);
     }
 
     private String getMedianaAmplitudePar(HashMap<String,List<Integer>> registros){
@@ -123,30 +122,34 @@ public class Calculo {
 
         try{
             NumberFormat formato = new DecimalFormat("0.00");
-            int valorSuperior = getFrequenciaPorFrequenciaAcumulada(registros,indiceSuperior);
-            int valorInferior = getFrequenciaPorFrequenciaAcumulada(registros,indiceInferior);
-            double resultado = (valorSuperior+valorInferior)/2;
+            int valorSuperior = Integer.valueOf(getRegistroDamediana(registros,indiceSuperior));
+            int valorInferior = Integer.valueOf(getRegistroDamediana(registros,indiceInferior));
+            double resultado = (valorSuperior + valorInferior)/2;
             return formato.format(resultado);
         }catch (Exception e){
-            return "A mediana estã entre "+ indiceSuperior+" e "+indiceInferior;
+            return "A mediana está entre "+ indiceSuperior+" e "+indiceInferior;
         }
     }
 
-    private int getFrequenciaPorFrequenciaAcumulada(HashMap<String,List<Integer>> registros, int indice){
+    private String getRegistroDamediana(HashMap<String,List<Integer>> registros, int indice){
        int contador = 0;
         for(String reg : registros.keySet()) {
             contador+= registros.get(reg).get(0);
             if(contador>=indice){
-                return registros.get(reg).get(0);
+                return reg;
             }
         }
-        return 0;
+        return "";
     }
 
     public int getSomatoriaDasFrequencias(HashMap<String,List<Integer>> registros){
         NavigableMap <String,List<Integer>> map = new TreeMap<>(registros);
         //A frequencia acumulada do ultimo indice corresponnde a somatória das frequencias
-        return map.lastEntry().getValue().get(INDICE_FREQUENCIA_ACUMULADA);
+        try {
+            return map.lastEntry().getValue().get(INDICE_FREQUENCIA_ACUMULADA);
+        }catch (Exception e){
+            return 0;
+        }
     }
 
     public int getAmplitudeTotal(HashMap<String,List<Integer>> registros){
@@ -161,7 +164,9 @@ public class Calculo {
     }
 
     public double getDesvioPadrao(HashMap<String,List<Integer>> registros){
-        double desvioPadrao = Math.sqrt((somaFrequenciasDosRegistrosAoQuadrado(registros)/2)- Math.pow((getSomatoriaDasFrequencias(registros)/2),2));
+        double somatoriaDasFrequenciasAoQuadro = somaFrequenciasDosRegistrosAoQuadrado(registros);
+        double somatoriaDasFrequencias = getSomatoriaDasFrequencias(registros);
+        double desvioPadrao = Math.sqrt(somatoriaDasFrequenciasAoQuadro/2 - Math.pow((somatoriaDasFrequencias/2),2));
         return desvioPadrao;
     }
 
@@ -169,5 +174,4 @@ public class Calculo {
         double coeficienteDeVariacao = getDesvioPadrao(registros)/media(registros)*100;
         return coeficienteDeVariacao;
     }
-
 }
